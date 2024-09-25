@@ -1,13 +1,14 @@
 "use client";
 import { useObservableSyncedQuery } from "@legendapp/state/sync-plugins/tanstack-react-query";
 import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
-import { observer } from "@legendapp/state/react";
+import { observer, useObservable } from "@legendapp/state/react";
 
 import { Input } from "@/components/ui/input";
 
 import type { Customer } from "@/lib/customers";
 
 function EditableCustomer({ customer }: { customer: Customer }) {
+  const loadState$ = useObservable(customer);
   const state$ = useObservableSyncedQuery<Customer>({
     query: {
       queryKey: ["user", customer.id],
@@ -17,21 +18,31 @@ function EditableCustomer({ customer }: { customer: Customer }) {
       initialData: customer,
     },
     mutation: {
-      mutationFn: async (variables) => {
+      mutationFn: async function <Customer,>(variables: Customer) {
+        const { name, email } = loadState$.get();
+        const sendData: Partial<Customer> = {};
+        if (variables.name !== name) {
+          sendData.name = variables.name;
+        }
+        if (variables.email !== email) {
+          sendData.email = variables.email;
+        }
         return fetch(
           `/api/customer/${customer.id}`,
-          { method: "PUT", body: JSON.stringify(variables) },
+          { method: "PUT", body: JSON.stringify(sendData) },
         ).then((v) => v.json());
       },
     },
-    changesSince: "last-sync",
+    transform: {
+      load: (data) => {
+        loadState$.set(data);
+        return data;
+      },
+    },
     persist: {
       plugin: ObservablePersistLocalStorage,
       retrySync: true,
       name: "profile",
-    },
-    retry: {
-      infinite: true,
     },
   });
 

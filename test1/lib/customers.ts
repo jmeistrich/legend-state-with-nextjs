@@ -32,11 +32,13 @@ export function updateCustomer(
   const customers = getCustomers();
   const index = customers.findIndex((customer) => customer.id === id);
 
+  console.log(customer);
+
   if (index === -1) {
     return null;
   }
 
-  customers[index] = customer;
+  customers[index] = { ...customers[index], ...customer };
   fs.writeFileSync("customers.json", JSON.stringify(customers, null, 2));
   return customer;
 }

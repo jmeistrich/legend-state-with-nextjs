@@ -13,6 +13,5 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   const customer = await req.json();
-  console.log(`Updating customer ${params.id}`, customer);
   return NextResponse.json(updateCustomer(parseInt(params.id), customer));
 }
