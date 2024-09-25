@@ -1,5 +1,6 @@
 "use client";
 import { useObservableSyncedQuery } from "@legendapp/state/sync-plugins/tanstack-react-query";
+import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
 import { observer } from "@legendapp/state/react";
 
 import { Input } from "@/components/ui/input";
@@ -23,24 +24,31 @@ function EditableCustomer({ customer }: { customer: Customer }) {
         ).then((v) => v.json());
       },
     },
+    changesSince: "last-sync",
+    persist: {
+      plugin: ObservablePersistLocalStorage,
+      retrySync: true,
+      name: "profile",
+    },
+    retry: {
+      infinite: true,
+    },
   });
 
-  return state$.get()
-    ? (
-      <div className="flex flex-col gap-2">
-        <Input
-          value={state$.get().name}
-          onChange={(e) => state$.get().name.set(e.target.value)}
-          placeholder="Customer name"
-        />
-        <Input
-          value={state$.get().email}
-          onChange={(e) => state$.get().email.set(e.target.value)}
-          placeholder="Customer email"
-        />
-      </div>
-    )
-    : null;
+  return (
+    <div className="flex flex-col gap-2">
+      <Input
+        value={state$.get().name}
+        onChange={(e) => state$.name.set(e.target.value)}
+        placeholder="Customer name"
+      />
+      <Input
+        value={state$.get().email}
+        onChange={(e) => state$.email.set(e.target.value)}
+        placeholder="Customer email"
+      />
+    </div>
+  );
 }
 
 export default observer(EditableCustomer);
