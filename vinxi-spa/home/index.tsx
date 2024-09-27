@@ -8,30 +8,16 @@ import {
   Outlet,
   RouterProvider,
 } from "@tanstack/react-router";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { queryOptions } from "@tanstack/react-query";
+import { QueryClientProvider, useSuspenseQuery } from "@tanstack/react-query";
+
+import { queryClient } from "./queryClient";
 
 import Home from "./Home";
 import EditableCustomer from "./EditableCustomer";
 
 import "./index.css";
 
-const fetchCustomer = async (id: string) => {
-  const res = await fetch(`/api/customers/${id}`);
-  return res.json();
-};
-
-const customerQueryOptions = (id: string) =>
-  queryOptions({
-    queryKey: ["customer", { id }],
-    queryFn: () => fetchCustomer(id),
-  });
-
-const queryClient = new QueryClient();
+import { customerQueryOptions } from "./fetchCustomer";
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -50,7 +36,7 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: () => <Home />,
+  component: Home,
 });
 
 const customersRoute = createRoute({
@@ -67,14 +53,15 @@ const customersIndexRoute = createRoute({
 const customerDetailRoute = createRoute({
   getParentRoute: () => customersRoute,
   path: "$customerId",
-  loader: ({ context: { queryClient }, params: { customerId } }) =>
-    queryClient.ensureQueryData(customerQueryOptions(customerId)),
+  loader: ({ context: { queryClient }, params: { customerId } }) => {
+    return queryClient.ensureQueryData(customerQueryOptions(customerId));
+  },
   component: () => {
     const { customerId } = customerDetailRoute.useParams();
     const customerQuery = useSuspenseQuery(customerQueryOptions(customerId));
     const customer = customerQuery.data;
 
-    return <EditableCustomer customer={customer} />;
+    return <EditableCustomer customer={customer} key={customerId} />;
   },
 });
 

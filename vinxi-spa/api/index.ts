@@ -14,12 +14,12 @@ export default eventHandler(async (event) => {
   if (info.pathname.startsWith("/api/customers/")) {
     const id = info.pathname.split("/")[3];
     if (event.method === "GET") {
-      return getCustomer(+id);
+      return getCustomer(id);
     }
     if (event.method === "PUT") {
       const data = await readBody(event);
       const customer = JSON.parse(data) as Customer;
-      return updateCustomer(+id, customer);
+      return updateCustomer(id, customer);
     }
   }
   if (info.pathname.startsWith("/api/customers")) {

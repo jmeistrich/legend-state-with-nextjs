@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 export interface Customer {
-  id: number;
+  id: string;
   name: string;
   email: string;
 }
@@ -13,14 +13,14 @@ export function getCustomers(): Customer[] {
   return JSON.parse(data);
 }
 
-export function getCustomer(id: number): Customer | null {
+export function getCustomer(id: string): Customer | null {
   const customers = getCustomers();
   return customers.find((customer) => customer.id === id) || null;
 }
 
 export function createCustomer(customer: Customer): Customer {
   const customers = getCustomers();
-  const newCustomer = { ...customer, id: customers.length + 1 };
+  const newCustomer = { ...customer, id: `${customers.length + 1}` };
 
   customers.push(newCustomer);
   fs.writeFileSync(CUSTOMERS_FILE, JSON.stringify(customers, null, 2));
@@ -28,7 +28,7 @@ export function createCustomer(customer: Customer): Customer {
 }
 
 export function updateCustomer(
-  id: number,
+  id: string,
   customer: Customer,
 ): Customer | null {
   const customers = getCustomers();
