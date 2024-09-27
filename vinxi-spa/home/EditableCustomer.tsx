@@ -5,7 +5,7 @@ import { observer, useObservable } from "@legendapp/state/react";
 
 import { Input } from "../components/ui/input";
 
-import type { Customer } from "@/lib/customers";
+import type { Customer } from "../lib/customers";
 
 function EditableCustomer({ customer }: { customer: Customer }) {
   const loadState$ = useObservable(customer);
