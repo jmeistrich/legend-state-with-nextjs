@@ -6,8 +6,10 @@ export interface Customer {
   email: string;
 }
 
+const CUSTOMERS_FILE = "customers-data.json";
+
 export function getCustomers(): Customer[] {
-  const data = fs.readFileSync("customers.json", "utf8");
+  const data = fs.readFileSync(CUSTOMERS_FILE, "utf8");
   return JSON.parse(data);
 }
 
@@ -21,7 +23,7 @@ export function createCustomer(customer: Customer): Customer {
   const newCustomer = { ...customer, id: customers.length + 1 };
 
   customers.push(newCustomer);
-  fs.writeFileSync("customers.json", JSON.stringify(customers, null, 2));
+  fs.writeFileSync(CUSTOMERS_FILE, JSON.stringify(customers, null, 2));
   return newCustomer;
 }
 
@@ -32,13 +34,11 @@ export function updateCustomer(
   const customers = getCustomers();
   const index = customers.findIndex((customer) => customer.id === id);
 
-  console.log(customer);
-
   if (index === -1) {
     return null;
   }
 
   customers[index] = { ...customers[index], ...customer };
-  fs.writeFileSync("customers.json", JSON.stringify(customers, null, 2));
+  fs.writeFileSync(CUSTOMERS_FILE, JSON.stringify(customers, null, 2));
   return customer;
 }

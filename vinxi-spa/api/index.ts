@@ -13,7 +13,6 @@ export default eventHandler(async (event) => {
 
   if (info.pathname.startsWith("/api/customers/")) {
     const id = info.pathname.split("/")[3];
-    console.log(id);
     if (event.method === "GET") {
       return getCustomer(+id);
     }
