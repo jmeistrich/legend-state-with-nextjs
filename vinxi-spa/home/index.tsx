@@ -16,6 +16,7 @@ import {
 import { queryOptions } from "@tanstack/react-query";
 
 import Home from "./Home";
+import EditableCustomer from "./EditableCustomer";
 
 import "./index.css";
 
@@ -73,12 +74,12 @@ const customerDetailRoute = createRoute({
     const customerQuery = useSuspenseQuery(customerQueryOptions(customerId));
     const customer = customerQuery.data;
 
-    return <div>Customer {customerId} {JSON.stringify(customer)}</div>;
+    return <EditableCustomer customer={customer} />;
   },
 });
 
 const routeTree = rootRoute.addChildren([
-  customersRoute.addChildren([customerDetailRoute]),
+  customersRoute.addChildren([customersIndexRoute, customerDetailRoute]),
   indexRoute,
 ]);
 

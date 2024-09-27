@@ -17,13 +17,15 @@ export default eventHandler(async (event) => {
       return getCustomer(+id);
     }
     if (event.method === "PUT") {
-      const customer = await readBody(event) as Customer;
+      const data = await readBody(event);
+      const customer = JSON.parse(data) as Customer;
       return updateCustomer(+id, customer);
     }
   }
   if (info.pathname.startsWith("/api/customers")) {
     if (event.method === "POST") {
-      const customer = await readBody(event) as Customer;
+      const data = await readBody(event);
+      const customer = JSON.parse(data) as Customer;
       return createCustomer(customer);
     } else if (event.method === "GET") {
       return getCustomers();

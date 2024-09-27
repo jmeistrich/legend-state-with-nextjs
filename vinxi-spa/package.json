@@ -11,6 +11,7 @@
   "license": "ISC",
   "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4",
   "dependencies": {
+    "@legendapp/state": "^3.0.0-beta.3",
     "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-query": "^5.56.2",
     "@tanstack/react-router": "^1.58.9",
